@@ -44,7 +44,7 @@ function App() {
   const now = new Date()
   const todayDate = now.toISOString().split('T')[0]
   const currentTime = now.toISOString().split('T')[1].split('.')[0]
-
+  
   useEffect(() => {
     const loadWeatherData = async () => {
       try {
@@ -61,12 +61,18 @@ function App() {
     loadWeatherData()
   }, [])
 
+  const getTodayIndex: () => number = () => {
+    return weatherData?.daily.time.findIndex(date => date.startsWith(todayDate)) ?? -1
+  }
+
   return (
     <>
       <h1>Location: Melbourne</h1>
       <h2>Local Time: {currentTime}</h2>
       <h2>Today's Date: {todayDate}</h2>
-      <h3>Sun rise: {weatherData?.daily.sunrise[7]}</h3>
+      <h3>Sun rise: {weatherData?.daily.sunrise[getTodayIndex()]?.split('T')[1]}</h3>
+      <h3>Sun set: {weatherData?.daily.sunset[getTodayIndex()]?.split('T')[1]}</h3>
+      <h3>Max UV Index: {weatherData?.daily.uv_index_max[getTodayIndex()]}</h3>
     </>
   )
 }
