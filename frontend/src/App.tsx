@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { getWeatherData } from './api/weather'
+import WeatherVariableCard from './components/WeatherVariableCard'
 
 interface WeatherData {
   latitude: number;
@@ -67,12 +68,39 @@ function App() {
 
   return (
     <>
-      <h1>Location: Melbourne</h1>
-      <h2>Local Time: {currentTime}</h2>
-      <h2>Today's Date: {todayDate}</h2>
-      <h3>Sun rise: {weatherData?.daily.sunrise[getTodayIndex()]?.split('T')[1]}</h3>
-      <h3>Sun set: {weatherData?.daily.sunset[getTodayIndex()]?.split('T')[1]}</h3>
-      <h3>Max UV Index: {weatherData?.daily.uv_index_max[getTodayIndex()]}</h3>
+      <div className="flex justify-center items-center min-h-screen bg-slate-50">
+        <div className="w-full max-w-6xl px-4">
+          {/* Grid for first row of cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+            <WeatherVariableCard weatherVariable={{
+              label: "Location",
+              value: "Melbourne, Australia"
+            }} />
+            <WeatherVariableCard weatherVariable={{
+              label: "Date",
+              value: todayDate
+            }} />
+            <WeatherVariableCard weatherVariable={{
+              label: "Time",
+              value: currentTime
+            }} />
+          </div>
+          
+          {/* Second row — centered single card + other info */}
+          <div className="mt-6 flex flex-col items-center">
+            <WeatherVariableCard weatherVariable={{
+              label: "Max UV Index",
+              value: weatherData?.daily.uv_index_max[getTodayIndex()] ?? null
+            }} />
+            <h3 className="mt-4 text-slate-700">
+              Sun rise: {weatherData?.daily.sunrise[getTodayIndex()]?.split('T')[1]}
+            </h3>
+            <h3 className="text-slate-700">
+              Sun set: {weatherData?.daily.sunset[getTodayIndex()]?.split('T')[1]}
+            </h3>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
