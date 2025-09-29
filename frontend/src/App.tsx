@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { getWeatherData } from './api/weather'
 import WeatherVariableCard from './components/WeatherVariableCard'
-import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Legend, Tooltip } from 'recharts';
 
 interface WeatherData {
   latitude: number;
@@ -72,6 +72,22 @@ function App() {
     return weatherData?.hourly.time.findIndex(time => time.startsWith(currentDateandHour)) ?? -1
   }
 
+  const forecast24h = () => {
+    if (!weatherData) return [];
+    const startIndex = getCurrentHourIndex();
+    const endIndex = Math.min(startIndex + 24, weatherData.hourly.time.length);
+    const forecast = [];
+    for (let i = startIndex; i < endIndex; i++) {
+      forecast.push({
+        hour: weatherData.hourly.time[i].split('T')[1].slice(0, 5), // Extract time in HH:MM format
+        temperature: weatherData.hourly.temperature_2m[i],
+        precipitation_probability: weatherData.hourly.precipitation_probability[i],
+        precipitation: weatherData.hourly.precipitation[i],
+      });
+    }
+    return forecast;
+  }
+
   return (
     <>
       <div className="flex justify-center items-center min-h-screen bg-slate-50">
@@ -94,6 +110,14 @@ function App() {
           
           {/* Second row — centered single card + other info */}
           <div className="mt-6 flex flex-col items-center">
+            <LineChart width={800} height={300} data={forecast24h()}>
+              <CartesianGrid />
+              <Line dataKey="temperature" />
+              <XAxis dataKey="hour" />
+              <YAxis />
+              <Legend />
+              <Tooltip />
+            </LineChart>
             <WeatherVariableCard weatherVariable={{
               label: "Max UV Index",
               value: weatherData?.daily.uv_index_max[getTodayIndex()] ?? null
