@@ -110,14 +110,6 @@ function App() {
           
           {/* Second row — centered single card + other info */}
           <div className="mt-6 flex flex-col items-center">
-            <LineChart width={800} height={300} data={forecast24h()}>
-              <CartesianGrid />
-              <Line dataKey="temperature" />
-              <XAxis dataKey="hour" />
-              <YAxis />
-              <Legend />
-              <Tooltip />
-            </LineChart>
             <WeatherVariableCard weatherVariable={{
               label: "Max UV Index",
               value: weatherData?.daily.uv_index_max[getTodayIndex()] ?? null
@@ -128,6 +120,16 @@ function App() {
             <h3 className="text-slate-700">
               Sun set: {weatherData?.daily.sunset[getTodayIndex()]?.split('T')[1]}
             </h3>
+            <LineChart width={800} height={300} data={forecast24h()}>
+              <CartesianGrid />
+              <Line dataKey="temperature" />
+              <XAxis dataKey="hour" />
+              <YAxis />
+              <Legend />
+              <Tooltip />
+            </LineChart>
+
+            
           </div>
         </div>
       </div>
