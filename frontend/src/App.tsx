@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { getWeatherData } from './api/weather'
 import WeatherVariableCard from './components/WeatherVariableCard'
+import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 interface WeatherData {
   latitude: number;
@@ -45,6 +46,7 @@ function App() {
   const now = new Date()
   const todayDate = now.toISOString().split('T')[0]
   const currentTime = now.toISOString().split('T')[1].split('.')[0]
+  const currentDateandHour = now.toISOString().split(':')[0]
   
   useEffect(() => {
     const loadWeatherData = async () => {
@@ -64,6 +66,10 @@ function App() {
 
   const getTodayIndex: () => number = () => {
     return weatherData?.daily.time.findIndex(date => date.startsWith(todayDate)) ?? -1
+  }
+
+  const getCurrentHourIndex: () => number = () => {
+    return weatherData?.hourly.time.findIndex(time => time.startsWith(currentDateandHour)) ?? -1
   }
 
   return (
