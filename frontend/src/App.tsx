@@ -17,12 +17,16 @@ interface WeatherData {
     sunrise: string;
     sunset: string;
     uv_index_max: string;
+    temperature_2m_max: string;
+    temperature_2m_min: string;
   };
   daily: {
     time: string[];
     sunrise: string[];
     sunset: string[];
     uv_index_max: number[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
   };
   hourly_units: {
     time: string;
@@ -43,11 +47,13 @@ function App() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Getting current date time in ISO format
   const now = new Date()
-  const todayDate = now.toISOString().split('T')[0]
-  const currentTime = now.toISOString().split('T')[1].split('.')[0]
-  const currentDateandHour = now.toISOString().split(':')[0]
+  const todayDate = now.toISOString().split('T')[0] // YYYY-MM-DD
+  const currentTime = now.toISOString().split('T')[1].split('.')[0] // HH:MM:SS
+  const currentDateandHour = now.toISOString().split(':')[0] // YYYY-MM-DDTHH
   
+  // Fetch weather data
   useEffect(() => {
     const loadWeatherData = async () => {
       try {
@@ -64,14 +70,17 @@ function App() {
     loadWeatherData()
   }, [])
 
+  // get index of today's date in the daily array
   const getTodayIndex: () => number = () => {
     return weatherData?.daily.time.findIndex(date => date.startsWith(todayDate)) ?? -1
   }
 
+  // get index of current hour in the hourly array
   const getCurrentHourIndex: () => number = () => {
     return weatherData?.hourly.time.findIndex(time => time.startsWith(currentDateandHour)) ?? -1
   }
 
+  // get weather forecast data for the next 24 hours
   const forecast24h = () => {
     if (!weatherData) return [];
     const startIndex = getCurrentHourIndex();

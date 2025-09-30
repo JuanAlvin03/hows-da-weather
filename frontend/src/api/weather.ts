@@ -27,7 +27,7 @@ export const searchMovies = async (query) => {
 // param and query if needed
 
 export const getWeatherData = async () => {
-    const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-37.8136&longitude=144.9631&daily=sunrise,sunset,uv_index_max&hourly=temperature_2m,precipitation_probability,precipitation&timezone=Australia%2FSydney&past_days=7")
+    const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-37.8136&longitude=144.9631&daily=sunrise,sunset,uv_index_max,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,precipitation_probability,precipitation&timezone=Australia%2FSydney&past_days=7")
     const data = await response.json();
     return data
 };
