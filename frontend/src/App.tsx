@@ -3,6 +3,7 @@ import './App.css'
 import { getWeatherData } from './api/weather'
 import WeatherVariableCard from './components/WeatherVariableCard'
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Legend, Tooltip } from 'recharts';
+import MinMaxTempChart from './components/MinMaxTempChart';
 
 interface WeatherData {
   latitude: number;
@@ -48,11 +49,17 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   // Getting current date time in ISO format
-  const now = new Date()
+  /*const now = new Date()
   const todayDate = now.toISOString().split('T')[0] // YYYY-MM-DD
   const currentTime = now.toISOString().split('T')[1].split('.')[0] // HH:MM:SS
-  const currentDateandHour = now.toISOString().split(':')[0] // YYYY-MM-DDTHH
-  
+  const currentDateandHour = now.toISOString().split(':')[0] // YYYY-MM-DDTHH*/
+
+  const now = new Date();
+  const todayDate = now.toLocaleDateString("en-CA"); // "YYYY-MM-DD"
+  const currentTime = now.toLocaleTimeString("en-GB", { hour12: false }); // "HH:MM:SS"
+  // If you want YYYY-MM-DDTHH (like your currentDateandHour)
+  const currentDateandHour = todayDate + "T" + currentTime.split(":")[0];
+
   // Fetch weather data
   useEffect(() => {
     const loadWeatherData = async () => {
@@ -92,6 +99,22 @@ function App() {
         temperature: weatherData.hourly.temperature_2m[i],
         precipitation_probability: weatherData.hourly.precipitation_probability[i],
         precipitation: weatherData.hourly.precipitation[i],
+      });
+    }
+    return forecast;
+  }
+
+  // get min max forecast for today + next 6 days
+  const minMaxForecast = () => {
+    if (!weatherData) return [];
+    const startIndex = getTodayIndex();
+    const endIndex = Math.min(startIndex + 7, weatherData.daily.time.length);
+    const forecast = [];
+    for (let i = startIndex; i < endIndex; i++) {
+      forecast.push({
+        date: weatherData.daily.time[i],
+        min: weatherData.daily.temperature_2m_min[i],
+        max: weatherData.daily.temperature_2m_max[i],
       });
     }
     return forecast;
@@ -138,7 +161,7 @@ function App() {
               <Tooltip />
             </LineChart>
 
-            
+            <MinMaxTempChart data={minMaxForecast()} />
           </div>
         </div>
       </div>
